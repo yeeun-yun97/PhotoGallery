@@ -2,7 +2,6 @@ package com.github.yeeun_yun97.toy.photogallary
 
 import android.content.ClipData
 import android.content.ClipDescription
-import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
@@ -16,7 +15,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -65,40 +63,16 @@ class ListPhotoActivity : ComponentActivity() {
 
     @Composable
     fun ImageList(items: List<String>) {
-        val lazyListState = rememberLazyListState()
-
-        Column() {
-//            DragContainer() {
-            LazyColumn(
-//                    state = lazyListState,
-//                    modifier = Modifier.pointerInput(Unit) {
-//                        detectDragGesturesAfterLongPress(
-//                            onDrag = { change, offset ->
-//                                Log.d("드래그 이벤트 로그", "온 드래그")
-//                            },
-//                            onDragStart = { offset ->
-//                                Log.d("드래그 이벤트 로그", "온 드래그 스타트")
-//                            },
-//                            onDragEnd = {
-//                                Log.d("드래그 이벤트 로그", "온 드래그 엔드")
-//                            },
-//                            onDragCancel = {
-//                                Log.d("드래그 이벤트 로그", "온 드래그 캔슬")
-//                            },
-//                        )
-//                    }
-            ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            LazyColumn {
                 items(items) { imageUrl ->
                     ImageItem(
-                        imageUrl = imageUrl,
-//                        modifier = Modifier.graphicsLayer(
-////                            translationY = calculatedYOffset.value,
-////                            translationX = calculatedXOffset.value
-//                        )
+                        imageUrl = imageUrl
                     )
                 }
             }
-//            }
         }
     }
 
@@ -107,43 +81,36 @@ class ListPhotoActivity : ComponentActivity() {
         imageUrl: String,
         modifier: Modifier = Modifier
     ) {
-//        DragTarget(dragData = DragData(MimeType.IMAGE_JPEG, imageUrl)) {
-        AndroidView(
-            modifier = modifier.size(200.dp),
-            factory = { it ->
-                val imageView = ImageView(it)
-                Glide.with(it).load(imageUrl).centerCrop().into(imageView)
-                val listener = DragStartHelper.OnDragStartListener { _, _ ->
-                    val clipData = ClipData(
-                        ClipDescription(imageUrl, arrayOf("text/plain")), ClipData.Item(
-                            Uri.parse(imageUrl)
+        Column {
+            AndroidView(
+                modifier = modifier.size(200.dp),
+                factory = {
+                    val imageView = ImageView(it)
+                    Glide.with(it).load(imageUrl).centerCrop().into(imageView)
+                    val listener = DragStartHelper.OnDragStartListener { _, _ ->
+                        val clipData = ClipData(
+                            ClipDescription(
+                                imageUrl,
+                                arrayOf("text/plain")
+                            ),
+                            ClipData.Item(imageUrl)
                         )
-                    )
-                    val flags = View.DRAG_FLAG_GLOBAL or View.DRAG_FLAG_GLOBAL_URI_READ
-                    imageView.startDragAndDrop(
-                        clipData,
-                        View.DragShadowBuilder(imageView),
-                        null,
-                        flags
-                    )
+                        val flags = View.DRAG_FLAG_GLOBAL or View.DRAG_FLAG_GLOBAL_URI_READ
+                        imageView.startDragAndDrop(
+                            clipData,
+                            View.DragShadowBuilder(imageView),
+                            null,
+                            flags
+                        )
+                    }
+                    DragStartHelper(imageView, listener).apply { attach() }
+                    imageView
                 }
-                DragStartHelper(imageView, listener).apply { attach() }
-                imageView
-            }
-        )
-
-
-//            Column{
-//                GlideImage(
-//                    modifier = modifier.size(200.dp),
-//                    imageModel = imageUrl,
-//                    contentScale = ContentScale.Crop
-//                )
-//                Spacer(
-//                    modifier = modifier.size(10.dp)
-//                )
-//            }
-//        }
+            )
+            Spacer(
+                modifier = modifier.size(10.dp)
+            )
+        }
     }
 
 

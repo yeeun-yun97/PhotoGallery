@@ -1,12 +1,16 @@
 package com.github.yeeun_yun97.toy.photogallary
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.util.DisplayMetrics
+import android.util.Log
 import android.view.DragEvent
-import android.widget.Button
 import android.widget.ImageView
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
@@ -20,18 +24,27 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.core.content.ContextCompat.startActivity
 import com.bumptech.glide.Glide
-import com.microsoft.device.dualscreen.draganddrop.DropContainer
-import com.microsoft.device.dualscreen.draganddrop.MimeType
-import com.skydoves.landscapist.glide.GlideImage
 
 class MainActivity : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             Column(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .pointerInput(Unit) {
+                        detectDragGestures(
+                            onDrag = {
+                                    change, dragAmount ->
+                                Log.d("디버그 드래그 표시?", "드래그 중 - $dragAmount")
+                            },
+                            onDragEnd = {
+                                Log.d("디버그 드래그 끝", "드래그 끝남남")
+                            }
+                        )
+                    },
                 verticalArrangement = Arrangement.Bottom,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -40,71 +53,44 @@ class MainActivity : ComponentActivity() {
                         "https://thumbs.dreamstime.com/b/vector-empty-transparent-background-transparency-grid-seamless-pattern-171149540.jpg",
                     )
                 }
-//                var isDroppingImage by remember { mutableStateOf(false) }
-//                var isDroppingItem by remember { mutableStateOf(false) }
-//                DropContainer(
-//                    modifier = Modifier,
-//                    onDrag = { inBounds, isDragging ->
-//                        if (!inBounds || !isDragging) {
-//                            isDroppingImage = false
-//                        }
-//                        isDroppingItem = isDragging
-//                    }
-//                ) { dragData ->
-//                    dragData?.also {
-//                        if (dragData.type == MimeType.IMAGE_JPEG) {
-//                            isDroppingImage = isDroppingItem
-//                            if (!isDroppingItem) {
-//                                imageUrl = dragData.data as String
-//                            }
-//                        }
-//                    }
-//                    GlideImage(
-//                        modifier = Modifier
-//                            .size(300.dp)
-//                            .pointerInput(Unit) {
-//                                detectDragGesturesAfterLongPress { change, dragAmount ->
-//                                }
-//                            },
-//                        imageModel = imageUrl
-//                    )
+                AndroidView(
+                    modifier = Modifier.size(300.dp),
+                    factory = { it ->
+                        val imageView = ImageView(it)
+                        Glide.with(it).load(imageUrl).centerCrop().into(imageView)
+                        imageView.setOnDragListener { view, dragEvent ->
+                            if (dragEvent.action == DragEvent.ACTION_DROP) {
+                                val bounds = this@MainActivity.windowManager.currentWindowMetrics.bounds
+                                val top = bounds.top
+                                val start = bounds.left
+                                val bottom = bounds.bottom
+                                val end = bounds.right
 
-                    AndroidView(
-                        modifier = Modifier.size(300.dp),
-                        factory = { it ->
-                            val imageView = ImageView(it)
-                            Glide.with(it).load(imageUrl).centerCrop().into(imageView)
-                            imageView.setOnDragListener { view, dragEvent ->
-                                if (dragEvent.action == DragEvent.ACTION_DROP) {
-                                    val imgView = view as ImageView
-                                    val item = dragEvent.clipData.getItemAt(0)
-                                    val dragData: String = item.uri.toString()
-                                    imageUrl = dragData
-                                    Glide.with(it).load(dragData).centerCrop().into(imgView)
-                                    view.invalidate()
-                                }
-                                return@setOnDragListener true
+                                Log.d("activity","좌표 = x(${start} ~ ${end}), y(${top} ~ ${bottom})")
+//                                Log.d("이미지뷰 클립 바운드",imageView.clipBounds.toString())
+                                val location = IntArray(2){0}
+                                imageView.getLocationOnScreen(location)
+                                Log.d("imageView","좌표 = x(${location[0]} ~ ${location[0]+imageView.right}), y(${location[1]} ~ ${location[1]+imageView.bottom})")
+                                Log.d("드롭된 위치","좌표 = x(${dragEvent.x}), y(${dragEvent.y})")
+                                val imgView = view as ImageView
+                                val item = dragEvent.clipData.getItemAt(0)
+                                val dragData: String = item.text.toString()
+                                imageUrl = dragData
+                                Glide.with(it).load(dragData).centerCrop().into(imgView)
+                                view.invalidate()
                             }
-                            imageView
-                        })
-
-
-                }
+                            return@setOnDragListener true
+                        }
+                        imageView
+                    })
                 Spacer(modifier = Modifier.height(40.dp))
                 Text("hello, world!")
-
                 Spacer(modifier = Modifier.height(15.dp))
-
-                Button(onClick = { openInMulti() }){
+                Button(onClick = { openInMulti() }) {
                     Text("click me to open multi window")
                 }
-
-
                 Spacer(modifier = Modifier.height(15.dp))
-
-//            }
-            //DragAndDropApp()
-
+            }
         }
     }
 
