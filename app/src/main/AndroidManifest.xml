@@ -4,6 +4,9 @@
     package="com.github.yeeun_yun97.toy.photogallary">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <permission android:name="DRAG_FLAG_GLOBAL_URI_READ"/>
+    <permission android:name="DRAG_FLAG_GLOBAL_URI_WRITE"/>
+
 
     <application
         android:allowBackup="true"

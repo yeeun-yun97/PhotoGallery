@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/main/res/drawable/drag_and_drop_ic_photo_black.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.17592592592592593" />
       </map>
     </option>

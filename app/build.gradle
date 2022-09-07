@@ -41,7 +41,12 @@ dependencies {
     // landscapist
     implementation "com.github.skydoves:landscapist-glide:1.4.7"
 
-//    Implementation "com.microsoft.device.dualscreen:draganddrop:1.0.0-alpha01"
+
+    implementation("com.microsoft.device.dualscreen:twopanelayout:1.0.1-alpha03")
+// supports xml view base drag and drop
+    implementation "androidx.draganddrop:draganddrop:1.0.0"
+
+    implementation("com.microsoft.device.dualscreen:draganddrop:1.0.0-alpha02")
 
     implementation 'androidx.compose.runtime:runtime-livedata:1.3.0-beta01'
 
