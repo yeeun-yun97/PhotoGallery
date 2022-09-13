@@ -1,19 +1,17 @@
 plugins {
-    id 'com.android.application'
+    id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
 }
 
 android {
-    compileSdk 33
+    compileSdk 32
 
     defaultConfig {
-        applicationId "com.github.yeeun_yun97.toy.photogallary"
         minSdk 28
-        targetSdk 33
-        versionCode 1
-        versionName "1.0"
+        targetSdk 32
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
     }
 
     buildTypes {
@@ -38,12 +36,10 @@ android {
 }
 
 dependencies {
-    // landscapist
+// landscapist
     implementation "com.github.skydoves:landscapist-glide:1.4.7"
 
-    //ktor
-    implementation "io.ktor:ktor-client-core:1.6.1"
-    implementation "io.ktor:ktor-client-cio:1.6.1"
+
 
 
     implementation("com.microsoft.device.dualscreen:twopanelayout:1.0.1-alpha03")
@@ -62,7 +58,6 @@ dependencies {
     implementation "androidx.compose.material:material-icons-extended:$compose_version"
     implementation 'com.google.android.material:material:1.4.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation project(path: ':YYNCompose')
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"

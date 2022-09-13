@@ -1,4 +1,4 @@
-package com.github.yeeun_yun97.toy.photogallary
+package com.github.yeeun_yun97.toy.photogallary.a
 
 import android.content.ClipData
 import android.content.ClipDescription
@@ -10,7 +10,6 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -87,6 +86,8 @@ class ListPhotoActivity : ComponentActivity() {
                 factory = {
                     val imageView = ImageView(it)
                     Glide.with(it).load(imageUrl).centerCrop().into(imageView)
+
+
                     val listener = DragStartHelper.OnDragStartListener { _, _ ->
                         val clipData = ClipData(
                             ClipDescription(
@@ -112,6 +113,8 @@ class ListPhotoActivity : ComponentActivity() {
             )
         }
     }
+
+
 
 
 }

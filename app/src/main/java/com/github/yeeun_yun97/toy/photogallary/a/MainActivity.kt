@@ -1,4 +1,4 @@
-package com.github.yeeun_yun97.toy.photogallary
+package com.github.yeeun_yun97.toy.photogallary.a
 
 import android.content.Intent
 import android.os.Build
